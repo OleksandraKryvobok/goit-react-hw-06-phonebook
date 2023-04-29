@@ -9,10 +9,3 @@ export const Item = styled.li`
         margin-bottom: 8px;
     }
 `;
-
-export const Container = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 300px;
-`;

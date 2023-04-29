@@ -1,21 +1,23 @@
-import PropTypes from 'prop-types';
-import { nanoid } from 'nanoid';
-import { List, Item, Container } from './ContactList.styled';
+import { List, Item } from './ContactList.styled';
+import { useSelector } from 'react-redux';
+import { getContacts, getFilter } from 'redux/selectors';
+import Contact from 'components/Contact';
 
-const ContactList = ({ contacts, deleteContact }) => {
+const ContactList = () => {
+    const contacts = useSelector(getContacts);
+    const filter = useSelector(getFilter);
+
+    const getVisibleContacts = () => {
+        const normalizedFilter = filter.toLocaleLowerCase();
+        return contacts.filter(contact => contact.name.toLowerCase().includes(normalizedFilter));
+    };
+    
     return (
         <List>
-            {contacts.map(contact => {
+            {getVisibleContacts().map(contact => {
                 return (
-                    <Item key={nanoid()}>
-                        <Container>
-                            <div>
-                                <span>{contact.name}</span>
-                                : {contact.number}
-                            </div>
-                            
-                            <button type='button' onClick={deleteContact}>Delete</button>
-                        </Container>
+                    <Item key={contact.id}>
+                        <Contact contact={contact} />
                     </Item>
                 )
             })}
@@ -24,13 +26,3 @@ const ContactList = ({ contacts, deleteContact }) => {
 };
 
 export default ContactList;
-
-ContactList.propTypes = {
-    contacts: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string,
-            number: PropTypes.string
-        })
-    ).isRequired,
-    deleteContact: PropTypes.func.isRequired
-}
